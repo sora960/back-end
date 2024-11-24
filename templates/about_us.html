@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EzTech: About Us & Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/259dd6fc62.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="static/css/about-us.css">
+    <link rel="stylesheet" href="static/css/login.css"> <!-- New CSS for Login -->
+</head>
+<body>
+
+    <!-- Header Section with Video -->
+    <div id="header">
+        <nav>
+            <ul>
+                <li><a href="#header">Login</a></li>
+                <li><a href="#about-company">About the Company</a></li>
+                <li><a href="#about">Team</a></li>
+            </ul>
+        </nav>
+
+        <!-- Background Video -->
+        <video autoplay muted loop playsinline>
+            <source src="static/videos/video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <!-- Login Form Section -->
+        <div class="login-section">
+            <div class="login-info">
+                <h1>EzTech: IP Management</h1>
+                <p>Built to make IP management smarter and easier. Effortlessly manage your network's IP addresses with our user-friendly and efficient platform.</p>
+
+            </div>
+
+            <div class="login-form">
+
+                <form action="/login" method="POST">
+                    <input type="text" name="username" placeholder="Username" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <button type="submit">Log In</button>
+                </form>
+                <a href="/register">Don't have an account? Register here</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- About the Company Section -->
+    <div id="about-company">
+        <div class="container">
+            <h1 class="sub-title">About EzTechSolutions</h1>
+            <div class="about-container">
+                <div class="about-box">
+                    <h2>Mission</h2>
+                    <p>Our mission is to empower businesses and individuals by delivering top-quality computer parts and expert tech support. We are dedicated to equipping our customers with the tools and knowledge needed to excel in the digital landscape.</p>
+                </div>
+                <div class="about-box">
+                    <h2>Purpose</h2>
+                    <p>Our purpose is clear: to provide superior technology solutions and comprehensive support services, helping our customers optimize their tech systems and achieve their goals with confidence.</p>
+                </div>
+                <div class="about-box">
+                    <h2>Vision</h2>
+                    <p>Our vision is to become a leading name in tech retail and support services. We aim to be renowned for our reliability and excellence, making a significant impact on our customers' technological success.</p>
+                </div>
+                <div class="about-box">
+                    <h2>Commitment</h2>
+                    <p>We specifically cater to small to medium-sized businesses, tech enthusiasts, and consumers seeking reliable, innovative, and high-quality tech products and support. EzTech Solutions stands out for its commitment to quality and customer satisfaction.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Us Section -->
+    <div id="about">
+        <div class="container">
+        <div class="container">
+            <h1 class="sub-title">Meet Our Team</h1>
+            <div class="team-container">
+                <!-- Team Member 1 -->
+                <div class="team-member">
+                    <img src="/static/images/Gimeno.png" alt="Nino Jairzon Gimeno">
+                    <h2>Nino Jairzon Gimeno</h2>
+                    <p>Lead Developer</p>
+                </div>
+                <!-- Team Member 2 -->
+            <!-- Team Member 2 with clickable link (Emmerwin Pascion) -->
+            <div class="team-member" style="position:relative;">
+                <a href="/portfolio/emmerwin-pascion" class="team-link"></a>
+                <img src="/static/images/pascion.png" alt="Emmerwin Pascion">
+                <h2>Emmerwin Pascion</h2>
+                <p>Programmer</p>
+            </div>
+                <!-- Team Member 3 -->
+                <div class="team-member">
+                    <img src="/static/images/paragas.png" alt="John Louie Paragas">
+                    <h2>John Louie Paragas</h2>
+                    <p>Documentation & Paperwork</p>
+                </div>
+                <!-- Team Member 4 -->
+                <div class="team-member">
+                    <img src="/static/images/Liezl.png" alt="Liezl Balonso">
+                    <h2>Liezl Balonso</h2>
+                    <p>Documentation & Paperwork</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+</html>

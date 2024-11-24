@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <!-- Link to Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Link to the sidebar.css file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
+
+    <!-- Link to the dashboard.css file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <!-- Font Awesome for icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+    <!-- For Chart.js (for charts) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- jQuery for AJAX (if needed) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <!-- Include the sidebar -->
+    {% include 'sidebar.html' %}
+
+    <div class="dashboard-container">
+        <div class="quick-summary card">
+            <h2><i class="fas fa-network-wired"></i> Quick Summary</h2>
+            <p><span id="total-ip">Loading...</span></p>
+            <p><span id="available-ip">Loading...</span></p>
+            <p><span id="allocated-ip">Loading...</span></p>
+        </div>
+
+        <div class="ip-status card">
+            <h2><i class="fas fa-signal"></i> IP Status</h2>
+            <canvas id="ipStatusChart"></canvas>
+        </div>
+
+        <div class="speed-test-history card">
+            <h2><i class="fas fa-tachometer-alt"></i> Speed Test History</h2>
+            <canvas id="speedTestChart" style="height:200px;"></canvas>
+        </div>
+
+        <div class="data-usage-history card">
+            <h2><i class="fas fa-chart-bar"></i> Data Usage History</h2>
+            <canvas id="dataUsageChart"></canvas>
+        </div>
+
+        <div class="recent-activity card">
+            <h2><i class="fas fa-history"></i> Recent Activity</h2>
+            <ul id="recent-activity-list"></ul>
+        </div>
+
+        <div class="your-ip card">
+            <h2><i class="fas fa-desktop"></i> Your IP</h2>
+            <p id="your-ip">Loading...</p>
+            <p id="network-provider">Loading...</p>
+        </div>
+    </div>
+
+    <!-- Link to your dashboard.js file -->
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+<p>Current Path: {{ request.path }}</p>
+
+</body>
+</html>

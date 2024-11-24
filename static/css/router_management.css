@@ -1,0 +1,28 @@
+/* General Styles */
+body {
+    background-color: #f8f9fa;
+}
+
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sticky-top-header {
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    background: white;
+}
+
+.modal-header-icon {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+.alert-dismissible .btn-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+}

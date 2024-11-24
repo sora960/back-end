@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed Test</title>
+
+    <!-- Link to the CSS files -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/speedtest.css') }}">
+
+    <!-- Include JustGage and Raphael.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/justgage@1.4.0/justgage.min.js"></script>
+
+    <!-- Font Awesome for icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+    <!-- jQuery for AJAX -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <!-- Include the sidebar -->
+    {% include 'sidebar.html' %}
+
+    <div class="dashboard-container">
+        <div class="speedtest-section">
+            <h2>Speed Test</h2>
+
+            <!-- Loader -->
+            <div id="loader">
+                <div class="spinner"></div>
+            </div>
+
+            <!-- Speedometers -->
+            <div class="gauge-container">
+                <div class="gauge-card">
+                    <h5>Download Speed</h5>
+                    <div id="download-speedometer" style="width:100%; height:250px;"></div>
+                </div>
+                <div class="gauge-card">
+                    <h5>Upload Speed</h5>
+                    <div id="upload-speedometer" style="width:100%; height:250px;"></div>
+                </div>
+            </div>
+
+            <!-- Placeholder for speed test results -->
+            <div id="speedtest-results" style="display: none; margin-top: 20px;">
+                <p><strong>Ping:</strong> <span id="ping"></span> ms</p>
+            </div>
+
+            <!-- Run Speed Test Button -->
+            <button id="run-speedtest">Run Speed Test</button>
+
+            <!-- Error or status messages -->
+            <p id="speedtest-result" style="color: red;"></p>
+        </div>
+    </div>
+
+    <!-- Link to the speedtest.js file -->
+    <script src="{{ url_for('static', filename='js/speedtest.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Usage</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/data_usage.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Add Chart.js library -->
+</head>
+<body>
+    {% include 'sidebar.html' %}
+
+    <div class="container">
+        <h1>Real-time Data Usage</h1>
+
+        <!-- Enhanced data usage statistics section -->
+        <div id="data-usage" class="data-usage-stats">
+            <div class="stat-box">
+                <p class="stat-label">Current Download</p>
+                <p class="stat-value"><span id="download-usage">0</span> MB</p>
+            </div>
+            <div class="stat-box">
+                <p class="stat-label">Current Upload</p>
+                <p class="stat-value"><span id="upload-usage">0</span> MB</p>
+            </div>
+        </div>
+
+         <button id="track-data-usage-btn" class="track-btn">Track Data Usage</button>
+
+        <!-- Graph container -->
+        <div class="graph-container">
+            <canvas id="dataUsageChart"></canvas>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/data_usage.js') }}"></script>
+</body>
+</html>

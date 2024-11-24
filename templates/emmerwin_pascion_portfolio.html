@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emmerwin Pascion - Portfolio</title>
+    <script src="https://kit.fontawesome.com/259dd6fc62.js" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #0d0d0d;
+            color: #fff;
+            overflow-x: hidden;
+            scroll-behavior: smooth; /* Smooth scrolling */
+        }
+
+        h1, h2, h3 {
+            margin-bottom: 20px;
+        }
+
+        /* Navigation Bar */
+        nav {
+            width: 100%;
+            background-color: transparent; /* Transparent initially */
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 999;
+            padding: 20px;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: flex-end; /* Aligns nav to the right */
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: flex-end; /* Align items to the right */
+        }
+
+        nav ul li {
+            margin: 0 20px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 8px 20px;
+            border-radius: 5px;
+        }
+
+        nav ul li a:hover {
+            color: #ff6f61;
+        }
+
+        /* Hide the nav when scrolling down past the first section */
+        body.scrolled nav {
+            background-color: transparent;
+            opacity: 0; /* Hide the nav */
+        }
+
+        body.first-section nav {
+            opacity: 1; /* Visible in the first section */
+        }
+
+        /* Container */
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 80px auto 0; /* Added margin-top to account for fixed navbar */
+            padding: 60px 20px;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-section {
+            flex-basis: 40%;
+            display: flex;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .image-section img {
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        .image-section img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .text-section {
+            flex-basis: 55%;
+            padding-left: 50px;
+            z-index: 1;
+        }
+
+        .text-section h1 {
+            font-size: 60px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        .text-section h2 {
+            font-size: 30px;
+            color: #ff6f61;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        .text-section p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            color: #bfbfbf;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+            line-height: 1.7;
+        }
+
+        .text-section a {
+            display: inline-block;
+            padding: 15px 40px;
+            background-color: #ff6f61;
+            color: white;
+            font-size: 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(255, 111, 97, 0.3);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .text-section a:hover {
+            background-color: #e85e53;
+            box-shadow: 0 7px 20px rgba(255, 111, 97, 0.5);
+            transform: translateY(-5px);
+        }
+
+        .parallax {
+            <img src="/static/images/gege.jpg" alt="Emmerwin Pascion">
+            min-height: 600px;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: relative;
+            z-index: -1;
+        }
+
+        .parallax::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .details-section {
+            padding: 60px 0;
+            background-color: #1b1b1b;
+            color: #fff;
+            text-align: center;
+        }
+
+        .details-section h2 {
+            font-size: 40px;
+            color: #fff;
+            margin-bottom: 50px 5 30px;
+        }
+
+        .details-section .education, .details-section .skills, .details-section .achievements {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: left;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .details-section .education-list, .skills div, .achievements div {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .details-section .education-list:hover, .skills div:hover, .achievements div:hover {
+            transform: translateY(-10px);
+        }
+
+        .details-section h3 {
+            font-size: 24px;
+            color: #ff6f61;
+            margin-bottom: 10px;
+        }
+
+        .details-section p {
+            font-size: 18px;
+            color: #ababab;
+        }
+
+        /* Skills Section Icon Styling */
+        .skills div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+            margin: 10px; /* Add spacing between items */
+            flex-direction: column; /* Stack icon and text vertically */
+            text-align: center; /* Center text under icons */
+        }
+
+        .skills i {
+            font-size: 40px; /* Larger icon size */
+            color: #ff6f61;
+            margin-bottom: 10px; /* Space between icon and text */
+        }
+
+        .skills h3 {
+            font-size: 22px;
+            color: #ff6f61;
+            margin-bottom: 10px;
+        }
+
+        .skills p {
+            font-size: 16px;
+            color: #ababab;
+            margin: 0;
+        }
+
+        /* Hover effect for skill items */
+        .skills div:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .contact-section {
+            padding: 40px 0;
+            background-color: #141414;
+            text-align: center;
+        }
+
+        .contact-section h2 {
+            font-size: 40px;
+            margin-bottom: 20px;
+            color: #ff6f61;
+        }
+
+        .social-icons {
+            margin-top: 30px;
+        }
+
+        .social-icons a {
+            font-size: 35px;
+            color: #fff;
+            margin: 0 20px;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: #ff6f61;
+            transform: scale(1.2);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .image-section img {
+                width: 250px;
+                height: 250px;
+            }
+
+            .text-section {
+                padding: 0;
+            }
+
+            .text-section h1 {
+                font-size: 40px;
+            }
+
+            .details-section .education, .details-section .skills, .details-section .achievements {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- First Section with Description -->
+    <div class="container" id="home">
+        <!-- Image Section -->
+        <div class="image-section">
+            <img src="/static/images/pascion.png" alt="Emmerwin Pascion">
+        </div>
+
+        <!-- Text Section -->
+        <div class="text-section">
+            <h1>Emmerwin Pascion</h1>
+            <h2>Aspiring Network Administrator</h2>
+            <p>3rd year Bachelor of Science in Information Technology Major in Network Administration.<br>
+               Driven by passion for networking and system administration, I aim to deliver innovative solutions.</p>
+            <a href="#contact">Connect with Me</a>
+        </div>
+    </div>
+
+    <div class="parallax"></div>
+
+    <!-- Education and Achievements Section -->
+    <div class="details-section" id="about">
+        <h2>Education Background</h2>
+        <div class="education">
+            <div class="education-list">
+                <h3>Elementary</h3>
+                <p>Ambayat Integrated School<br></p>
+            </div>
+            <div class="education-list">
+                <h3>High School</h3>
+                <p>Saint Vincent's Catholic School of Bayambang Inc.<br>Graduated with Honors</p>
+            </div>
+            <div class="education-list">
+                <h3>Senior High School</h3>
+                <p>Saint Vincent's Catholic School of Bayambang Inc.<br>Graduated with High Honors</p>
+            </div>
+            <div class="education-list">
+                <h3>College</h3>
+                <p>Laguna Polytechnic University Siniloan Campus<br>BSIT Major in Network Administration</p>
+            </div>
+        </div>
+        <h2 id="skills">Skills & Programming Languages</h2>
+        <div class="skills">
+            <div>
+                <i class="fab fa-python"></i>
+                <h3>Python</h3>
+                <p>Proficient in Python for network automation and data analysis.</p>
+            </div>
+            <div>
+                <i class="fab fa-java"></i>
+                <h3>Java</h3>
+                <p>Experienced with Java for backend development and object-oriented programming.</p>
+            </div>
+            <div>
+                <i class="fab fa-css3-alt"></i>
+                <h3>CSS</h3>
+                <p>Skilled in designing modern and responsive web layouts using CSS.</p>
+            </div>
+            <div>
+                <i class="fab fa-js"></i>
+                <h3>JavaScript</h3>
+                <p>Proficient in JavaScript for creating dynamic, interactive web applications.</p>
+            </div>
+            <div>
+                <i class="fab fa-cuttlefish"></i> <!-- Icon placeholder for C# -->
+                <h3>C#</h3>
+                <p>Experienced in C# for desktop applications and game development using Unity.</p>
+            </div>
+            <div>
+                <i class="fas fa-network-wired"></i> <!-- Cisco networking icon -->
+                <h3>Cisco Networking</h3>
+                <p>Familiar with Cisco networking tools and protocols such as OSPF, RIP, and BGP.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="contact-section" id="contact">
+        <h2>Connect with Me</h2>
+        <div class="social-icons">
+            <a href="mailto:emmerwinpascion.m@gmail.com"><i class="fas fa-envelope"></i></a>
+            <a href="https://www.facebook.com/profile.php?id=100061829640442"><i class="fab fa-facebook"></i></a>
+            <a href="https://www.instagram.com/emmr.pscnn/"><i class="fab fa-instagram"></i></a>
+            <a href="https://discord.com/ellis_mffx"><i class="fab fa-discord"></i></a>
+            <a href="https://x.com/pscnnn_"><i class="fab fa-twitter"></i></a>
+        </div>
+    </div>
+
+    <!-- Script to hide the nav when scrolled past the first section -->
+    <script>
+        const navbar = document.querySelector('nav');
+        const firstSection = document.querySelector('#home');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > firstSection.offsetHeight) {
+                document.body.classList.add('scrolled');
+                document.body.classList.remove('first-section');
+            } else {
+                document.body.classList.remove('scrolled');
+                document.body.classList.add('first-section');
+            }
+        });
+    </script>
+
+</body>
+</html>

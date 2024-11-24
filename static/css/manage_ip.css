@@ -1,0 +1,253 @@
+/* Updated container for better spacing */
+.container {
+    padding: 30px;
+    margin-left: 250px; /* Move to the right of the sidebar */
+    background-color: #1e1e1e; /* Darker background */
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px; /* Spacing between header and table */
+}
+
+.header h1 {
+    color: #00d8ff; /* Accent color for titles */
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.header .right-side {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+#search-input {
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    font-size: 14px;
+}
+
+#scan-network-btn {
+    padding: 10px 20px;
+    background-color: #00aaff;
+    border: none;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+#loading {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.8); /* Optional background for better visibility */
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1000; /* Ensure it appears on top */
+}
+
+#loading:before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 40px;
+    margin: 0 auto;
+    border: 6px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+
+#scan-network-btn:hover {
+    background-color: #0088cc;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 10px; /* Rounded corners for the table */
+    overflow: hidden; /* Ensure rounded corners affect child elements */
+}
+
+table th, table td {
+    padding: 15px 12px;
+    text-align: left;
+    border-bottom: 1px solid #444;
+    font-size: 15px;
+}
+
+table th {
+    background-color: #1f1f1f;
+    color: #00d8ff;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: none;
+}
+
+table td {
+    background-color: #2e2e2e;
+    color: #ddd;
+}
+
+table tr:nth-child(even) {
+    background-color: #252525; /* Slight color variation for rows */
+}
+
+table tr:hover {
+    background-color: #444;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.action-buttons .edit, .action-buttons .delete {
+    cursor: pointer;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+.action-buttons .edit {
+    color: #00aaff;
+}
+
+.action-buttons .edit:hover {
+    color: #007acc;
+}
+
+.action-buttons .delete {
+    color: red;
+}
+
+.action-buttons .delete:hover {
+    color: darkred;
+}
+
+/* Modal styles for assigning IP */
+#assignIpModal {
+    position: fixed;
+    z-index: 100;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    padding: 20px;
+    background-color: #2e2e2e;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    color: #ddd;
+}
+
+/* Modal styling for better layout */
+.modal-content {
+    padding: 20px;
+    background-color: #2e2e2e;
+    border-radius: 10px;
+    color: #ddd;
+    max-width: 400px;
+    margin: auto;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: #00aaff;
+    text-align: center;
+}
+
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.modal-content input {
+    padding: 10px;
+    width: 100%;
+    background-color: #444;
+    border: none;
+    color: #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.modal-content .modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.modal-content button {
+    padding: 10px 20px;
+    background-color: #00aaff;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-content button.cancel {
+    background-color: #ff4f4f;
+}
+
+.modal-content button:hover {
+    opacity: 0.9;
+}
+
+.modal-content button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 170, 255, 0.7);
+}
+
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .container {
+        margin-left: 0; /* Remove margin for smaller screens */
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    table th, table td {
+        padding: 10px 8px;
+        font-size: 14px;
+    }
+
+    #assignIpModal {
+        width: 90%; /* Modal width adjusts for smaller screens */
+    }
+}

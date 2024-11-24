@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Sidebar</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="sidebar">
+        <!-- Sidebar Header -->
+        <div class="sidebar-header">
+            <!-- <img src="avatar.png" alt="Avatar" class="sidebar-avatar"> -->
+            <h3>ADMINISTRATOR</h3>
+        </div>
+
+        <!-- Sidebar Navigation -->
+        <nav>
+            <ul>
+                <!-- Dashboard -->
+                <li>
+                    <a href="{{ url_for('dashboard.get_dashboard_data') }}"
+                       class="{% if request.path == url_for('dashboard.get_dashboard_data') %}active{% endif %}">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                </li>
+
+                <!-- Speedtest -->
+                <li>
+                    <a href="{{ url_for('speedtest.render_speedtest_page') }}"
+                       class="{% if request.path == url_for('speedtest.render_speedtest_page') %}active{% endif %}">
+                        <i class="fas fa-tachometer-alt"></i> Speedtest
+                    </a>
+                </li>
+
+                <!-- Data Usage -->
+                <li>
+                    <a href="{{ url_for('data_usage.render_data_usage_page') }}"
+                       class="{% if request.path == url_for('data_usage.render_data_usage_page') %}active{% endif %}">
+                        <i class="fas fa-chart-line"></i> Data Usage
+                    </a>
+                </li>
+
+                <!-- Manage IP -->
+                <li>
+                    <a href="{{ url_for('ip_management.render_manage_ip_page') }}"
+                       class="{% if request.path == url_for('ip_management.render_manage_ip_page') %}active{% endif %}">
+                        <i class="fas fa-network-wired"></i> Manage IP
+                    </a>
+                </li>
+
+                <!-- Router Management -->
+                <li>
+                    <a href="{{ url_for('router_management.render_router_management_page') }}"
+                       class="{% if request.path == url_for('router_management.render_router_management_page') %}active{% endif %}">
+                        <i class="fas fa-router"></i> Router Management
+                    </a>
+                </li>
+
+                <!-- Report -->
+                <li>
+                    <a href="{{ url_for('report.render_report_page') }}"
+                       class="{% if request.path == url_for('report.render_report_page') %}active{% endif %}">
+                        <i class="fas fa-chart-pie"></i> Report
+                    </a>
+                </li>
+
+                <!-- Logout -->
+                <li>
+                    <a href="{{ url_for('auth.logout') }}">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</body>
+</html>

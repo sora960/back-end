@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Router IP Address</title>
+
+    <!-- Link to Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS for IP input page -->
+    <style>
+:root {
+    --bg-color: #1b1c1f; /* Updated background color to match previous design */
+    --container-bg-color: #252631; /* Matches the other container backgrounds */
+    --primary-color: #00d8ff; /* Unified with the primary color */
+    --text-color: #f0f0f0;
+    --input-bg-color: #1b1b2d;
+    --error-color: red;
+    --button-bg-color: #00d8ff; /* Updated button color */
+    --button-hover-bg-color: #00b3cc; /* Hover color to match design */
+    --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    --border-radius: 10px;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+/* Container styling for the IP input form */
+.container {
+    text-align: center;
+    background-color: var(--container-bg-color);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+h1 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+input[type="text"] {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    width: 300px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    background-color: var(--input-bg-color);
+    color: var(--text-color);
+}
+
+button {
+    padding: 10px 20px;
+    background-color: var(--button-bg-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--button-hover-bg-color);
+}
+
+.error-message {
+    color: var(--error-color);
+    margin-top: 10px;
+}
+
+/* Dashboard grid and card styling */
+.dashboard-container {
+    margin-left: 270px;
+    padding: 30px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+}
+
+.card {
+    background-color: var(--container-bg-color);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        width: 90%;
+    }
+}
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+        <h1>Enter Router IP Address</h1>
+        <form action="/set_ip" method="POST" id="ip-form">
+            <input type="text" name="router_ip" id="router-ip" placeholder="Enter Router IP Address" required>
+            <br>
+            <button type="submit">Proceed to Dashboard</button>
+        </form>
+        <p class="error-message" id="error-message"></p>
+    </div>
+
+    <!-- Script to handle IP validation (optional) -->
+    <script>
+        document.getElementById('ip-form').addEventListener('submit', function(event) {
+            const ipInput = document.getElementById('router-ip').value;
+            const ipPattern = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+
+            if (!ipPattern.test(ipInput)) {
+                event.preventDefault();
+                document.getElementById('error-message').textContent = "Invalid IP Address format!";
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EzTech - Register</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #0b1120;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90vw;
+            max-width: 1100px;
+        }
+
+        .left-section {
+            flex: 1;
+            padding-right: 30px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: left;
+        }
+
+        .left-section h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .left-section p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+            color: #c9d1d9;
+        }
+
+        .left-section button {
+            padding: 14px 28px;
+            background-color: #5865F2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+
+        .left-section button:hover {
+            background-color: #4d5bd0;
+        }
+
+        .right-section {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .right-section form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .right-section input[type="text"],
+        .right-section input[type="email"],
+        .right-section input[type="password"],
+        .right-section input[type="tel"] {
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background-color: #2e3646;
+            color: white;
+            font-size: 16px;
+        }
+
+        .right-section input::placeholder {
+            color: #c3c3c3;
+        }
+
+        .right-section button {
+            padding: 14px;
+            background-color: #5865F2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+
+        .right-section button:hover {
+            background-color: #4d5bd0;
+        }
+
+        .right-section a {
+            color: #5865F2;
+            text-decoration: none;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .right-section a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 10px 0;
+            color: white;
+            background-color: #0b1120;
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+            font-size: 14px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                width: 90vw;
+                padding: 20px;
+            }
+
+            .left-section {
+                margin-bottom: 20px;
+                padding-right: 0;
+                text-align: center;
+            }
+
+            .right-section form {
+                width: 100%;
+            }
+
+            .left-section h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Left Section -->
+        <div class="left-section">
+            <h1>Join EzTech Today</h1>
+            <p>Register to access a smart and powerful platform for managing your IP addresses, networks, and devices. It's simple, secure, and efficient.</p>
+        </div>
+
+        <!-- Right Section: Registration Form -->
+        <div class="right-section">
+            <form action="/register" method="POST">
+                <input type="text" name="full_name" placeholder="Full Name" required>
+                <input type="email" name="email" placeholder="Email Address" required>
+                <input type="email" name="confirm_email" placeholder="Confirm Email Address" required>
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                <input type="tel" name="phone" placeholder="Phone Number" required>
+                <input type="tel" name="alt_phone" placeholder="Alternate Phone (Optional)">
+                <button type="submit">Register</button>
+            </form>
+            <a href='/about-us'>Already have an account? Log in here</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2024 EzTech. All Rights Reserved.
+    </div>
+
+</body>
+</html>

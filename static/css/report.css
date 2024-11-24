@@ -1,0 +1,122 @@
+/* Styling for the report container */
+.report-container {
+    margin-left: 270px;
+    padding: 20px;
+    background-color: var(--bg-color);
+    min-height: 100vh;
+}
+
+/* Styling for the form container */
+.report-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    background-color: var(--box-bg-color);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 20px;
+    justify-content: space-between;
+}
+
+.form-group {
+    flex: 1 1 200px; /* Flexibility for responsiveness */
+}
+
+.report-header label {
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #a5a5a5;
+}
+
+.report-header select,
+.report-header input {
+    padding: 10px;
+    border: 1px solid #e4e4e4;
+    border-radius: 10px;
+    background-color: var(--box-bg-color);
+    color: white;
+    font-size: 14px;
+    width: 100%;
+     box-sizing: border-box;
+}
+
+/* Ensure the button is centered below the inputs */
+.button-container {
+    display: flex;
+    justify-content: center; /* Center the button */
+    width: 100%;
+}
+
+.report-header button {
+    padding: 10px 25px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.report-header button:hover {
+    background-color: var(--button-hover-color);
+}
+
+/* Report table styling */
+.report-table {
+    margin-top: 30px;
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--box-bg-color);
+}
+
+.report-table th,
+.report-table td {
+    padding: 15px;
+    text-align: left;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--box-bg-color);
+}
+
+.report-table th {
+    background-color: var(--primary-color);
+    font-weight: bold;
+}
+
+.report-table tbody tr:nth-child(even) {
+    background-color: #2e3b55;
+}
+
+.report-output {
+    margin-top: 20px;
+    background-color: var(--box-bg-color);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .report-header {
+        flex-direction: column;
+    }
+
+    .form-group {
+        width: 100%;
+    }
+
+    .button-container {
+        justify-content: center;
+    }
+
+    .report-header button {
+        width: 100%;
+    }
+
+    .report-table th,
+    .report-table td {
+        font-size: 14px;
+        padding: 10px;
+    }
+}

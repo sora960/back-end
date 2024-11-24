@@ -1,0 +1,64 @@
+/* Login Form Styles */
+.login-section {
+    position: absolute;
+    top: 20%;
+    right: 5%;
+    width: 600px; /* Increased width */
+    background: rgba(255, 255, 255, 0.1);
+    padding: 30px; /* Increased padding */
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    color: #fff;
+}
+
+.login-section h2 {
+    font-size: 28px; /* Slightly larger font */
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.login-section input {
+    width: 100%;
+    padding: 15px; /* Larger padding for input fields */
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 18px; /* Increased font size */
+}
+
+.login-section input::placeholder {
+    color: #ddd;
+}
+
+.login-section button {
+    width: 100%;
+    padding: 15px; /* Increased button size */
+    margin-top: 15px;
+    border: none;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #5865F2, #0d73ff);
+    color: white;
+    font-size: 18px; /* Larger button font size */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-section button:hover {
+    background: linear-gradient(135deg, #4d5bd0, #004cff);
+}
+
+.login-section a {
+    display: block;
+    text-align: center;
+    color: #ccc;
+    margin-top: 20px; /* Adjusted spacing */
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.login-section a:hover {
+    color: #fff;
+}

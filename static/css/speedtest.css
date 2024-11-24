@@ -1,0 +1,148 @@
+:root {
+    --bg-color: #1b1c1f;
+    --box-bg-color: #252631;
+    --primary-color: #00d8ff;
+    --text-color: #e4e4e4;
+    --shadow-color: rgba(0, 0, 0, 0.15);
+    --font-size-base: 1rem;
+    --font-size-lg: 1.5rem;
+    --padding: 20px;
+    --box-radius: 15px;
+    --box-shadow: 0 10px 20px var(--shadow-color);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Speed test section */
+.speedtest-section {
+    text-align: center;
+    margin-top: 100px;
+}
+
+#speedtest-results {
+    margin-top: -30px; /* Move closer to the gauges */
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--text-color);
+    position: relative;
+    left: -550px; /* Adjust the value to move it to the right */
+    text-align: right;
+}
+
+.speedtest-section h2 {
+    color: var(--primary-color);
+    font-size: 3rem;
+    margin-bottom: 100px;
+    position: relative; /* Added */
+    left: -550px; /* Adjust the value to move it to the right */
+    text-align: right;
+}
+
+/* Button styling */
+#run-speedtest {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    padding: 15px 60px;
+    border: none;
+    border-radius: var(--box-radius);
+    font-size: var(--font-size-base);
+    cursor: pointer;
+    margin-top: 30px;
+    left: 90px;
+    display: inline-flex;
+    justify-content: center; /* Center spinner horizontally */
+    align-items: center; /* Center spinner vertically */
+    position: relative;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Button hover effect (only for non-loading state) */
+#run-speedtest:hover:not(.loading) {
+    background-color: #00b3cc;
+    transform: scale(1.05); /* Slight hover effect for better interactivity */
+}
+
+/* Button in loading state */
+#run-speedtest.loading {
+    background-color: #666; /* Change background to indicate loading */
+    color: transparent; /* Hide the button text */
+    pointer-events: none; /* Disable button clicks */
+    cursor: not-allowed; /* Indicate it's disabled */
+    opacity: 0.8; /* Slight transparency for better feedback */
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+}
+
+/* Spinner inside the button */
+#run-speedtest.loading:after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3); /* Spinner's background */
+    border-top: 3px solid white; /* Spinner's visible part */
+    border-radius: 50%;
+    animation: spin 1s linear infinite; /* Rotate the spinner */
+}
+
+/* Spinner animation */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Gauge container */
+.gauge-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--padding);
+    gap: 30px;
+    max-width: 70vw;
+    margin: 0 auto;
+    position: relative; /* Added */
+    left: 90px;
+}
+
+.gauge-card {
+    width: 50%;
+    max-width: 500px;
+    background-color: var(--box-bg-color);
+    border-radius: var(--box-radius);
+    padding: var(--padding);
+    box-shadow: var(--box-shadow);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.gauge-card:hover {
+    transform: scale(1.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .gauge-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .gauge-card {
+        width: 90%;
+    }
+
+    #run-speedtest {
+        width: 100%; /* Make the button span full width */
+        padding: 15px 20px; /* Adjust padding for smaller screens */
+    }
+
+    #run-speedtest:hover {
+        transform: none; /* Disable scale on smaller screens */
+    }
+}
