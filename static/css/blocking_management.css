@@ -1,0 +1,170 @@
+/* Root Variables */
+:root {
+    --bg-color: #1b1c1f; /* Main background color */
+    --box-bg-color: #24243e; /* Neutral dark background for cards */
+    --primary-color: #174e5f; /* Bright blue for highlights */
+    --text-color: #d4d4dc; /* Softer white text */
+    --muted-color: #9aa0b3; /* Muted text color */
+    --box-radius: 12px; /* Border radius for cards and buttons */
+    --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Box shadow */
+}
+
+/* General Styles */
+body {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Text Styling */
+h1, h5 {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Buttons */
+.btn-neon {
+    color: #fff;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: var(--box-radius);
+    box-shadow: var(--box-shadow);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-neon:hover {
+    background-color: #009bcc;
+    box-shadow: 0 6px 12px rgba(0, 196, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-outline-neon {
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: var(--box-radius);
+    background-color: transparent;
+    transition: 0.3s;
+}
+
+.btn-outline-neon:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
+/* Cards */
+.card {
+    background-color: var(--box-bg-color);
+    border-radius: var(--box-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 20px;
+}
+
+/* Tables */
+.table-dark {
+    background-color: var(--box-bg-color);
+    color: var(--text-color);
+    border-radius: var(--box-radius);
+}
+
+.table-dark th {
+    background-color: #30303f;
+    color: var(--text-color);
+    font-weight: 600;
+    border-bottom: 2px solid #404050;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 196, 255, 0.1);
+    transition: background-color 0.2s;
+}
+
+.main-content {
+    margin-left: 270px; /* Adjust this value to shift content right */
+    padding: 20px;
+    min-height: 100vh;
+    box-sizing: border-box;
+    background-color: var(--bg-color); /* Maintain consistent background */
+}
+
+h5.card-title {
+    color: #00c4ff; /* A bright blue for highlights */
+    font-weight: bold;
+}
+
+.card-body h5 {
+    color: var(--primary-color);
+    font-size: 1.25rem; /* Slightly larger font for visibility */
+}
+
+/* Ensure table headers are clear */
+.table-dark th {
+    background-color: #404050; /* Slightly lighter than before */
+    color: #ffffff; /* White text for better contrast */
+    font-weight: 600;
+}
+
+/* Header Titles */
+h1.fw-bold {
+    color: #00d8ff; /* Bright neon blue for better visibility */
+    font-size: 2rem;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.card-title {
+    color: #00d8ff; /* Match with the primary color */
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+/* Buttons */
+.btn-neon {
+    color: #fff;
+    background-color: #00d8ff;
+    border: none;
+    border-radius: var(--box-radius);
+    box-shadow: 0 4px 8px rgba(0, 216, 255, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-size: 1rem; /* Slightly larger font size */
+}
+
+.btn-neon:hover {
+    background-color: #009bcc;
+    box-shadow: 0 6px 12px rgba(0, 216, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Tables */
+.table-dark th {
+    background-color: #30303f; /* Lighter for better contrast */
+    color: #ffffff; /* White text for readability */
+    font-weight: 600;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 216, 255, 0.1); /* Subtle hover effect */
+    transition: background-color 0.2s;
+}
+
+/* Sidebar Active State */
+.sidebar nav ul li a.active {
+    background-color: #00d8ff;
+    color: #1b2a41;
+    font-weight: bold;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transform: scale(1.05);
+}
+
+/* Cards */
+.card {
+    background-color: #24243e; /* Neutral dark background */
+    border-radius: var(--box-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 20px;
+}

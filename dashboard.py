@@ -1,5 +1,4 @@
 from flask import Blueprint, jsonify, current_app, render_template, request
-from datetime import datetime
 import logging
 import requests
 
@@ -9,146 +8,64 @@ dashboard = Blueprint('dashboard', __name__)
 # Logger setup
 logger = logging.getLogger(__name__)
 
-@dashboard.route('/dashboard', methods=['GET'])
+@dashboard.route('/dashboard_data', methods=['GET'])
 def get_dashboard_data():
     try:
-        # Check if pymongo is registered and accessible
+        # Ensure PyMongo is initialized
         if 'pymongo' not in current_app.extensions:
             raise RuntimeError("PyMongo is not properly initialized.")
 
         mongo = current_app.extensions['pymongo']
 
-        # Fetch data for the quick summary (total, allocated, available IPs)
-        total_ips = mongo.db.ip_allocations.count_documents({})
-        allocated_ips = mongo.db.ip_allocations.count_documents({"allocated": True})
+        # Quick Summary: Fetch device information from the `devices` collection
+        total_ips = 254  # Example for a /24 subnet
+        allocated_ips = mongo.db.devices.count_documents({})  # Count all devices in the collection
         available_ips = total_ips - allocated_ips
 
-        # Fetch IP status for the pie chart
-        ip_status = {
-            "total_ip": total_ips,
-            "allocated_ip": allocated_ips,
-            "available_ip": available_ips
-        }
+        # Debug Quick Summary
+        logger.debug(f"Quick Summary: Total: {total_ips}, Allocated: {allocated_ips}, Available: {available_ips}")
 
         # Fetch speed test history (last 10 results)
         speed_tests = mongo.db.speed_tests.find().sort("timestamp", -1).limit(10)
         speed_test_history = [
             {
-                "download_speed": test.get('download_speed'),
-                "upload_speed": test.get('upload_speed'),
-                "ping": test.get('ping'),
-                "timestamp": test.get('timestamp')  # Ensure timestamp consistency
+                "download_speed": test.get('download_speed', 0),
+                "upload_speed": test.get('upload_speed', 0),
+                "ping": test.get('ping', 0),
+                "timestamp": test.get('timestamp', "No data")
             }
             for test in speed_tests
         ]
+        # Debug Speed Test History
+        logger.debug(f"Speed Test History: {speed_test_history}")
 
-        # Fetch data usage history (for the past week)
+        # Fetch data usage history (last 7 days)
         data_usage = mongo.db.data_usage.find().sort("timestamp", -1).limit(7)
         data_usage_history = [
             {
-                "day": usage.get('day'),
-                "download": usage.get('download'),
-                "upload": usage.get('upload')
+                "day": usage.get('day', "N/A"),
+                "download": usage.get('download', 0),
+                "upload": usage.get('upload', 0)
             }
             for usage in data_usage
         ]
+        # Debug Data Usage History
+        logger.debug(f"Data Usage History: {data_usage_history}")
 
-        # Fetch recent activities (last 5 activities)
+        # Fetch recent activities (last 5 entries) from the `activities` collection
         recent_activities = mongo.db.activities.find().sort("timestamp", -1).limit(5)
         activity_log = [
             {
-                "action": activity.get('action'),
-                "details": activity.get('details'),
-                "timestamp": activity.get('timestamp')
+                "action": activity.get('action', "No activity"),
+                "details": activity.get('details', "No recent data"),
+                "timestamp": activity.get('timestamp', "N/A")
             }
             for activity in recent_activities
         ]
+        # Debug Recent Activity
+        logger.debug(f"Recent Activity: {activity_log}")
 
-        # Structure the response for the dashboard
-        dashboard_data = {
-            "quick_summary": {
-                "total_ips": total_ips,
-                "allocated_ips": allocated_ips,
-                "available_ips": available_ips,
-            },
-            "ip_status": ip_status,
-            "speed_test_history": speed_test_history,
-            "data_usage_history": data_usage_history,
-            "recent_activity": activity_log,
-            "your_ip": request.remote_addr,  # Dynamically fetch user's local IP
-            "network_provider": "PLDT HOME FIBR"  # Example static data for the network provider
-        }
-
-        # Render the dashboard page, pass the data to the frontend
-        return render_template('dashboard.html', dashboard_data=dashboard_data)
-
-    except RuntimeError as re:
-        logger.error(f"Runtime error: {str(re)}")
-        return jsonify(message="Runtime error in dashboard", error=str(re)), 500
-    except Exception as e:
-        logger.error(f"Error fetching dashboard data: {str(e)}")
-        return jsonify(message="Error fetching dashboard data", error=str(e)), 500
-
-
-@dashboard.route('/api/dashboard_data', methods=['GET'])
-def api_get_dashboard_data():
-    try:
-        # Check if pymongo is registered and accessible
-        if 'pymongo' not in current_app.extensions:
-            raise RuntimeError("PyMongo is not properly initialized.")
-
-        mongo = current_app.extensions['pymongo']
-
-        # Fetch data for the quick summary
-        total_ips = mongo.db.ip_allocations.count_documents({})
-        allocated_ips = mongo.db.ip_allocations.count_documents({"allocated": True})
-        available_ips = total_ips - allocated_ips
-
-        # Fetch IP status for the pie chart
-        ip_status = {
-            "total_ip": total_ips,
-            "allocated_ip": allocated_ips,
-            "available_ip": available_ips
-        }
-
-        # Fetch speed test history (last 10 results)
-        speed_tests = mongo.db.speed_tests.find().sort("timestamp", -1).limit(10)
-        speed_test_history = [
-            {
-                "download_speed": test.get('download_speed'),
-                "upload_speed": test.get('upload_speed'),
-                "ping": test.get('ping'),
-                "timestamp": test.get('timestamp')
-            }
-            for test in speed_tests
-        ]
-
-        # Fetch data usage history (for the past week)
-        data_usage = mongo.db.data_usage.find().sort("timestamp", -1).limit(7)
-        data_usage_history = [
-            {
-                "day": usage.get('day'),
-                "download": usage.get('download'),
-                "upload": usage.get('upload')
-            }
-            for usage in data_usage
-        ]
-
-        # Fetch recent activities (last 5 activities)
-        recent_activities = mongo.db.activities.find().sort("timestamp", -1).limit(5)
-        activity_log = [
-            {
-                "action": activity.get('action'),
-                "details": activity.get('details'),
-                "timestamp": activity.get('timestamp')
-            }
-            for activity in recent_activities
-        ]
-
-        # Get the local IP of the user
-        local_ip = request.remote_addr
-
-        # Fetch the public IP and ISP details using ipinfo.io
+        # Fetch public IP and ISP dynamically
         public_ip = "Unavailable"
         network_provider = "Unknown ISP"
         try:
@@ -159,23 +76,28 @@ def api_get_dashboard_data():
             ipinfo_data = ipinfo_response.json()
             network_provider = ipinfo_data.get('org', 'Unknown ISP')
         except requests.exceptions.RequestException as req_e:
-            logger.error(f"Failed to fetch IP info: {str(req_e)}")
+            logger.error(f"Failed to fetch IP/ISP details: {req_e}")
 
+        # Debug Public IP and Network Provider
+        logger.debug(f"Public IP: {public_ip}, Network Provider: {network_provider}")
+
+        # Structure data for the frontend
         dashboard_data = {
             "quick_summary": {
                 "total_ips": total_ips,
                 "allocated_ips": allocated_ips,
                 "available_ips": available_ips,
             },
-            "ip_status": ip_status,
             "speed_test_history": speed_test_history,
             "data_usage_history": data_usage_history,
             "recent_activity": activity_log,
-            "your_ip": local_ip,
-            "network_provider": network_provider
+            "your_ip": request.remote_addr,
+            "public_ip": public_ip,
+            "network_provider": network_provider,
+            "is_empty": not any([speed_test_history, data_usage_history, activity_log])
         }
 
-        return jsonify(dashboard_data)
+        return jsonify(dashboard_data)  # Return JSON response
 
     except RuntimeError as re:
         logger.error(f"Runtime error: {str(re)}")
@@ -183,3 +105,12 @@ def api_get_dashboard_data():
     except Exception as e:
         logger.error(f"Error fetching dashboard data: {str(e)}")
         return jsonify(message="Error fetching dashboard data", error=str(e)), 500
+
+@dashboard.route('/dashboard', methods=['GET'])
+def render_dashboard():
+    try:
+        # Render the dashboard HTML template
+        return render_template('dashboard.html')
+    except Exception as e:
+        logger.error(f"Error rendering dashboard page: {e}")
+        return jsonify({"error": "Failed to render dashboard"}), 500

@@ -8,19 +8,19 @@
     <!-- Link to Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
-    <!-- Link to the sidebar.css file -->
+    <!-- Link to the sidebar.css -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
 
-    <!-- Link to the dashboard.css file -->
+    <!-- Link to the dashboard.css -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 
     <!-- Font Awesome for icons -->
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 
-    <!-- For Chart.js (for charts) -->
+    <!-- For Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- jQuery for AJAX (if needed) -->
+    <!-- jQuery for AJAX -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
@@ -28,44 +28,59 @@
     {% include 'sidebar.html' %}
 
     <div class="dashboard-container">
+        <!-- Quick Summary -->
         <div class="quick-summary card">
             <h2><i class="fas fa-network-wired"></i> Quick Summary</h2>
-            <p><span id="total-ip">Loading...</span></p>
-            <p><span id="available-ip">Loading...</span></p>
-            <p><span id="allocated-ip">Loading...</span></p>
+            <p>Available IPs: <span id="available-ip">Loading...</span></p>
+            <p>Occupied IPs: <span id="occupied-ip">Loading...</span></p>
         </div>
 
-        <div class="ip-status card">
-            <h2><i class="fas fa-signal"></i> IP Status</h2>
-            <canvas id="ipStatusChart"></canvas>
-        </div>
-
-        <div class="speed-test-history card">
-            <h2><i class="fas fa-tachometer-alt"></i> Speed Test History</h2>
-            <canvas id="speedTestChart" style="height:200px;"></canvas>
-        </div>
-
-        <div class="data-usage-history card">
-            <h2><i class="fas fa-chart-bar"></i> Data Usage History</h2>
-            <canvas id="dataUsageChart"></canvas>
-        </div>
-
+        <!-- Recent Activity -->
         <div class="recent-activity card">
             <h2><i class="fas fa-history"></i> Recent Activity</h2>
-            <ul id="recent-activity-list"></ul>
+            <ul id="recent-activity-list" class="scrollable-list">
+                <li>Loading...</li>
+            </ul>
         </div>
 
+        <!-- Speed Test History -->
+        <div class="speed-test-history card">
+            <h2><i class="fas fa-tachometer-alt"></i> Speed Test History</h2>
+            <canvas id="speedTestChart">
+                <!-- Fallback for browsers that do not support canvas -->
+                Your browser does not support canvas.
+            </canvas>
+        </div>
+
+        <!-- Data Usage History -->
+        <div class="data-usage-history card">
+            <h2><i class="fas fa-chart-bar"></i> Data Usage History</h2>
+            <canvas id="dataUsageChart">
+                <!-- Fallback for browsers that do not support canvas -->
+                Your browser does not support canvas.
+            </canvas>
+        </div>
+
+        <!-- Your IP and ISP -->
         <div class="your-ip card">
             <h2><i class="fas fa-desktop"></i> Your IP</h2>
-            <p id="your-ip">Loading...</p>
-            <p id="network-provider">Loading...</p>
+            <p>IP Address: <span id="your-ip">Loading...</span></p>
+            <p>ISP: <span id="network-provider">Loading...</span></p>
         </div>
     </div>
 
-    <!-- Link to your dashboard.js file -->
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="spinner-overlay d-none">
+        <div class="spinner-container">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <!-- Response Message -->
+    <div id="response" class="alert d-none"></div>
+
+    <!-- Link to the dashboard.js file -->
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-
-<p>Current Path: {{ request.path }}</p>
-
 </body>
 </html>

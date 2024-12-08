@@ -13,7 +13,6 @@
     <div class="sidebar">
         <!-- Sidebar Header -->
         <div class="sidebar-header">
-            <!-- <img src="avatar.png" alt="Avatar" class="sidebar-avatar"> -->
             <h3>ADMINISTRATOR</h3>
         </div>
 
@@ -22,8 +21,8 @@
             <ul>
                 <!-- Dashboard -->
                 <li>
-                    <a href="{{ url_for('dashboard.get_dashboard_data') }}"
-                       class="{% if request.path == url_for('dashboard.get_dashboard_data') %}active{% endif %}">
+                    <a href="{{ url_for('dashboard.render_dashboard') }}"
+                     class="{% if request.path == url_for('dashboard.render_dashboard') %}active{% endif %}">
                         <i class="fas fa-home"></i> Dashboard
                     </a>
                 </li>
@@ -44,19 +43,19 @@
                     </a>
                 </li>
 
-                <!-- Manage IP -->
-                <li>
-                    <a href="{{ url_for('ip_management.render_manage_ip_page') }}"
-                       class="{% if request.path == url_for('ip_management.render_manage_ip_page') %}active{% endif %}">
-                        <i class="fas fa-network-wired"></i> Manage IP
-                    </a>
-                </li>
-
                 <!-- Router Management -->
                 <li>
                     <a href="{{ url_for('router_management.render_router_management_page') }}"
                        class="{% if request.path == url_for('router_management.render_router_management_page') %}active{% endif %}">
-                        <i class="fas fa-router"></i> Router Management
+                        <i class="fas fa-network-wired"></i> Router
+                    </a>
+                </li>
+
+                <!-- Blocking Management -->
+                <li>
+                    <a href="{{ url_for('blocking_management.render_blocking_page') }}"
+                        class="{% if request.path == url_for('blocking_management.render_blocking_page') %}active{% endif %}">
+                        <i class="fas fa-ban"></i> IP Blocking
                     </a>
                 </li>
 

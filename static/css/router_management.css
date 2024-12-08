@@ -1,28 +1,223 @@
-/* General Styles */
-body {
-    background-color: #f8f9fa;
+/* Root Variables */
+:root {
+    --bg-color: #1b1c1f; /* Main background color */
+    --box-bg-color: #24243e; /* Neutral dark background for cards */
+    --primary-color: #00c4ff; /* Bright blue for highlights */
+    --text-color: #d4d4dc; /* Softer white text */
+    --muted-color: #9aa0b3; /* Muted text color */
+    --shadow-color: rgba(0, 0, 0, 0.15); /* Box shadow */
+    --box-radius: 12px; /* Border radius for cards and buttons */
+    --box-shadow: 0 4px 8px var(--shadow-color); /* Box shadow */
 }
 
+/* General Styles */
+body {
+    background-color: var(--bg-color) !important; /* Main dark background */
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Text Styling */
+.text-highlight {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.text-muted {
+    color: var(--muted-color);
+}
+
+.text-muted-strong {
+    color: #ffffff;
+    font-weight: 500;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* Buttons */
+.btn-neon {
+    color: #fff;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: var(--box-radius);
+    box-shadow: var(--box-shadow);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-neon:hover {
+    background-color: #009bcc;
+    box-shadow: 0 6px 12px rgba(0, 196, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-outline-neon {
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: var(--box-radius);
+    background-color: transparent;
+    transition: 0.3s;
+}
+
+.btn-outline-neon:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
+/* Specific Button Group Styles */
+.btn-group .btn-neon-success {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: var(--box-radius);
+    font-weight: 600;
+    padding: 10px 20px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.btn-group .btn-neon-success:hover {
+    background-color: #218838;
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+.btn-group .btn-neon-warning {
+    background-color: #ffc107;
+    color: #000;
+    border: none;
+    border-radius: var(--box-radius);
+    font-weight: 600;
+    padding: 10px 20px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.btn-group .btn-neon-warning:hover {
+    background-color: #e0a800;
+    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+}
+
+.btn-group .btn-neon-info {
+    background-color: #17a2b8;
+    color: #fff;
+    border: none;
+    border-radius: var(--box-radius);
+    font-weight: 600;
+    padding: 10px 20px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.btn-group .btn-neon-info:hover {
+    background-color: #138496;
+    box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
+}
+
+/* Cards and Containers */
+.card {
+    background-color: var(--box-bg-color); /* Card background */
+    border-radius: var(--box-radius);
+    box-shadow: var(--box-shadow);
+    border: 1px solid #30303f;
+    margin-bottom: 20px;
+}
+
+.card-body {
+    color: var(--text-color);
+    padding: 20px;
+}
+
+.card-title {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Tables */
+.table-dark {
+    background-color: var(--box-bg-color); /* Match card background */
+    color: var(--text-color);
+    border-radius: var(--box-radius);
+}
+
+.table-dark th {
+    background-color: #30303f;
+    color: var(--text-color);
+    font-weight: 600;
+    border-bottom: 2px solid #404050;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 196, 255, 0.1);
+    transition: background-color 0.2s;
+}
+
+/* Inputs */
+input[type="text"] {
+    color: var(--text-color);
+    background-color: #30303f;
+    border: 1px solid #50505f;
+    border-radius: var(--box-radius);
+    padding: 8px 12px;
+    font-size: 0.9rem;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* Alerts */
+.alert {
+    background-color: var(--box-bg-color);
+    color: var(--text-color);
+    border-radius: var(--box-radius);
+    box-shadow: var(--box-shadow);
+}
+
+/* Animations for Buttons */
 .btn-icon {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    transition: transform 0.2s, background-color 0.2s;
 }
 
-.sticky-top-header {
-    position: sticky;
-    top: 0;
-    z-index: 1020;
-    background: white;
+.btn-icon:hover {
+    transform: translateY(-2px);
+    background-color: rgba(0, 196, 255, 0.1); /* Subtle background change */
 }
 
-.modal-header-icon {
-    font-size: 1.5rem;
-    margin-right: 0.5rem;
+/* Modals */
+.modal-content {
+    background-color: var(--box-bg-color);
+    color: var(--text-color);
+    border-radius: var(--box-radius);
+    box-shadow: var(--box-shadow);
 }
 
-.alert-dismissible .btn-close {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+.modal-header {
+    border-bottom: 1px solid #404050;
+}
+
+.modal-content .btn {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-radius: var(--box-radius);
+}
+
+.modal-content .btn:hover {
+    background-color: #009bcc;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .btn-group {
+        gap: 5px; /* Adjust button spacing for smaller screens */
+    }
+    .card {
+        margin: 10px;
+    }
 }

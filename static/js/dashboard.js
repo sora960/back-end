@@ -1,170 +1,214 @@
-window.onload = function () {
-    fetch('/api/dashboard_data')
-        .then(response => response.json())
-        .then(dashboardData => {
-            // IP Status Pie Chart
-            var ipStatusCtx = document.getElementById('ipStatusChart').getContext('2d');
-            new Chart(ipStatusCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Allocated', 'Available'],
-                    datasets: [{
-                        data: [dashboardData.ip_status.allocated_ip, dashboardData.ip_status.available_ip],
-                        backgroundColor: ['#00d8ff', '#a8a8ff'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                color: '#ffffff'
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (context) {
-                                    let percentage = ((context.raw / dashboardData.ip_status.total_ip) * 100).toFixed(2);
-                                    return `${context.label}: ${percentage}%`;
-                                }
-                            }
-                        },
-                        datalabels: {
-                            formatter: (value, ctx) => {
-                                let total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                                let percentage = ((value / total) * 100).toFixed(2) + "%";
-                                return percentage;
-                            },
-                            color: '#ffffff',
-                            font: {
-                                weight: 'bold',
-                                size: 16,  // Increase size for better visibility
-                            },
-                            anchor: 'center',  // Center the text inside the chart
-                            align: 'center',  // Center alignment
-                        }
-                    }
-                }
-            });
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("Page loaded. Ensuring spinner is hidden.");
+    hideLoadingSpinner(); // Ensure spinner is hidden on page load
+    fetchDashboardData(); // Fetch and populate the dashboard data
+});
 
-            // Format date to a readable format for the speed test chart
-            function formatDate(dateString) {
-                const date = new Date(dateString);
-                return date.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                });
-            }
+// Unified function for API calls
+async function fetchAPI(endpoint, method = 'GET', body = null) {
+    const headers = { 'Content-Type': 'application/json' };
+    const options = { method, headers };
+    if (body) options.body = JSON.stringify(body);
 
-            // Speed Test History Line Chart
-            var speedTestCtx = document.getElementById('speedTestChart').getContext('2d');
-            new Chart(speedTestCtx, {
-                type: 'line',
-                data: {
-                    labels: dashboardData.speed_test_history.map(test => formatDate(test.timestamp || "No Data")),
-                    datasets: [{
-                        label: 'Download Speed',
-                        data: dashboardData.speed_test_history.map(test => test.download_speed),
-                        borderColor: '#00d8ff',
-                        backgroundColor: 'rgba(0, 216, 255, 0.2)',  // Add a bit of fill for a modern look
-                        tension: 0.4,  // Make the lines curved
-                        fill: true,  // Fill the area under the curve
-                    }, {
-                        label: 'Upload Speed',
-                        data: dashboardData.speed_test_history.map(test => test.upload_speed),
-                        borderColor: '#a8a8ff',
-                        backgroundColor: 'rgba(168, 168, 255, 0.2)',  // Add a bit of fill for a modern look
-                        tension: 0.4,  // Make the lines curved
-                        fill: true,  // Fill the area under the curve
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            display: false,  // This hides the x-axis labels
-                            grid: {
-                                display: false
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: '#3b3b5f'  // Adjust the color of the grid lines
-                            }
-                        }
+    try {
+        const response = await fetch(endpoint, options);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || data.error || 'API error');
+        return data;
+    } catch (error) {
+        console.error(`Error during API call to ${endpoint}:`, error);
+        throw error;
+    }
+}
+
+// Main function to fetch and populate dashboard data
+async function fetchDashboardData() {
+    try {
+        console.log("Showing spinner...");
+        showLoadingSpinner(); // Show spinner before API call
+
+        const dashboardData = await fetchAPI('/dashboard_data'); // Fetch dashboard data
+        console.log("Fetched Dashboard Data:", dashboardData); // Debugging log
+
+        // Populate the dashboard UI with fetched data
+        populateQuickSummary(dashboardData.quick_summary || {});
+        populateSpeedTestHistory(dashboardData.speed_test_history || []);
+        populateDataUsageHistory(dashboardData.data_usage_history || []);
+        populateRecentActivity(dashboardData.recent_activity || []);
+        populateNetworkInfo(
+            dashboardData.your_ip || "N/A",
+            dashboardData.public_ip || "Unavailable",
+            dashboardData.network_provider || "Unknown ISP"
+        );
+    } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        showResponse(`Error fetching dashboard data: ${error.message}`, 'danger');
+    } finally {
+        hideLoadingSpinner(); // Always hide spinner after API call
+        console.log("Spinner hidden.");
+    }
+}
+
+// Function to populate quick summary data
+function populateQuickSummary(quickSummary) {
+    console.log("Populating Quick Summary Data:", quickSummary);
+    document.getElementById('available-ip').textContent = quickSummary.available_ips || "N/A";
+    document.getElementById('occupied-ip').textContent = quickSummary.allocated_ips || "N/A";
+}
+
+// Function to populate speed test history
+function populateSpeedTestHistory(speedTestHistory) {
+    console.log("Populating Speed Test History Data:", speedTestHistory);
+
+    const chartData = {
+        labels: speedTestHistory.map(entry => new Date(entry.timestamp).toLocaleString()),
+        datasets: [
+            {
+                label: 'Download Speed (Mbps)',
+                data: speedTestHistory.map(entry => entry.download_speed),
+                borderColor: '#40c9ff', // Updated to softer cyan
+                backgroundColor: 'rgba(64, 201, 255, 0.1)', // Transparent fill
+                fill: true,
+            },
+            {
+                label: 'Upload Speed (Mbps)',
+                data: speedTestHistory.map(entry => entry.upload_speed),
+                borderColor: '#6cd3b0', // Updated to muted mint green
+                backgroundColor: 'rgba(108, 211, 176, 0.1)', // Transparent fill
+                fill: true,
+            },
+        ],
+    };
+
+    const ctx = document.getElementById('speedTestChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#a6b0bf', // Updated legend text color
+                        font: { family: "'Poppins', sans-serif", size: 14 },
                     },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'bottom',
-                            labels: {
-                                color: '#00d8ff',  // Make the labels color pop
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Data Usage History Bar Chart
-            var dataUsageCtx = document.getElementById('dataUsageChart').getContext('2d');
-            new Chart(dataUsageCtx, {
-                type: 'bar',
-                data: {
-                    labels: dashboardData.data_usage_history.map(usage => usage.day),
-                    datasets: [{
-                        label: 'Download',
-                        data: dashboardData.data_usage_history.map(usage => usage.download),
-                        backgroundColor: '#00d8ff'
-                    }, {
-                        label: 'Upload',
-                        data: dashboardData.data_usage_history.map(usage => usage.upload),
-                        backgroundColor: '#a8a8ff'
-                    }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,  // Prevents overflow in small areas
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                color: '#ffffff'
-                            }
-                        }
-                    }
-                }
-            });
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#a6b0bf' }, // Updated axis label color
+                    grid: { color: '#3a3f50' }, // Updated gridline color
+                    title: { display: true, text: 'Time', color: '#a6b0bf' },
+                },
+                y: {
+                    ticks: { color: '#a6b0bf' },
+                    grid: { color: '#3a3f50' },
+                    title: { display: true, text: 'Speed (Mbps)', color: '#a6b0bf' },
+                },
+            },
+        },
+    });
+}
 
-            // Update the text values for the Quick Summary
-            document.getElementById('total-ip').textContent = `Total IP: ${dashboardData.quick_summary.total_ips}`;
-            document.getElementById('available-ip').textContent = `Available IP: ${dashboardData.quick_summary.available_ips}`;
-            document.getElementById('allocated-ip').textContent = `Allocated IP: ${dashboardData.quick_summary.allocated_ips}`;
+// Function to populate data usage history
+function populateDataUsageHistory(dataUsageHistory) {
+    console.log("Populating Data Usage History Data:", dataUsageHistory);
 
-            // Populate Recent Activity
-            let activityLog = document.getElementById('recent-activity-list');
-            activityLog.innerHTML = '';
-            dashboardData.recent_activity.forEach(activity => {
-                let li = document.createElement('li');
-                li.textContent = `${activity.action} - ${activity.details} (${formatDate(activity.timestamp)})`;
-                activityLog.appendChild(li);
-            });
+    const chartData = {
+        labels: dataUsageHistory.map(entry => entry.day),
+        datasets: [
+            {
+                label: 'Download (MB)',
+                data: dataUsageHistory.map(entry => entry.download),
+                backgroundColor: '#2094d1', // Updated to darker cyan
+                borderWidth: 1,
+            },
+            {
+                label: 'Upload (MB)',
+                data: dataUsageHistory.map(entry => entry.upload),
+                backgroundColor: '#3aa57c', // Updated to muted green
+                borderWidth: 1,
+            },
+        ],
+    };
 
-            document.getElementById('your-ip').textContent = dashboardData.your_ip;
-            document.getElementById('network-provider').textContent = dashboardData.network_provider;
-        })
-        .catch(error => {
-            console.error('Error fetching dashboard data:', error);
-            document.getElementById('total-ip').textContent = 'Error loading data';
-            document.getElementById('available-ip').textContent = 'Error loading data';
-            document.getElementById('allocated-ip').textContent = 'Error loading data';
-            document.getElementById('your-ip').textContent = 'Error loading IP';
-        });
-};
+    const ctx = document.getElementById('dataUsageChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: chartData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#a6b0bf', // Updated legend text color
+                        font: { family: "'Poppins', sans-serif", size: 14 },
+                    },
+                },
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#a6b0bf' },
+                    grid: { color: '#3a3f50' },
+                    title: { display: true, text: 'Day', color: '#a6b0bf' },
+                },
+                y: {
+                    ticks: { color: '#a6b0bf' },
+                    grid: { color: '#3a3f50' },
+                    title: { display: true, text: 'Data (MB)', color: '#a6b0bf' },
+                },
+            },
+        },
+    });
+}
+
+
+// Function to populate recent activity
+function populateRecentActivity(recentActivity) {
+    console.log("Populating Recent Activity Data:", recentActivity);
+
+    const activityList = document.getElementById('recent-activity-list');
+    activityList.innerHTML = ''; // Clear any existing content
+
+    if (!recentActivity.length) {
+        activityList.innerHTML = '<li class="text-center">No recent activity found.</li>';
+        return;
+    }
+
+    recentActivity.forEach(activity => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${new Date(activity.timestamp).toLocaleString()} - ${activity.action}: ${activity.details}`;
+        activityList.appendChild(listItem);
+    });
+}
+
+// Function to populate network information
+function populateNetworkInfo(localIP, publicIP, networkProvider) {
+    console.log("Populating Network Info:", { localIP, publicIP, networkProvider });
+    document.getElementById('your-ip').textContent = localIP;
+    document.getElementById('network-provider').textContent = networkProvider || 'Unknown ISP';
+}
+
+// Show the loading spinner
+function showLoadingSpinner() {
+    const spinner = document.getElementById('loading-spinner');
+    if (spinner) spinner.classList.remove('d-none');
+}
+
+// Hide the loading spinner
+function hideLoadingSpinner() {
+    const spinner = document.getElementById('loading-spinner');
+    if (spinner) spinner.classList.add('d-none');
+}
+
+// Show response messages
+function showResponse(message, type) {
+    const responseEl = document.getElementById('response');
+    if (responseEl) {
+        responseEl.textContent = message;
+        responseEl.className = `alert alert-${type}`;
+        responseEl.classList.remove('d-none');
+
+        setTimeout(() => responseEl.classList.add('d-none'), 5000);
+    }
+}

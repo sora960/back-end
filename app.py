@@ -40,17 +40,13 @@ try:
     mongo.db.list_collection_names()
     print("MongoDB connected successfully.")
 except Exception as e:
-    logger.error(f"MongoDB connection error: {e}")
+    logger.error(f"MongoDB  connection error: {e}")
 
 # User loader for Flask-Login
 from auth import User  # Import the User class from auth.py
 @login_manager.user_loader
 def load_user(user_id):
     return User.get(user_id)
-
-# Register Blueprints
-from ip_management import ip_management
-app.register_blueprint(ip_management)
 
 from dashboard import dashboard as dashboard_bp
 app.register_blueprint(dashboard_bp)
@@ -66,7 +62,7 @@ app.register_blueprint(data_usage)
 
 from auth import auth
 app.register_blueprint(auth)
-
+    
 from general import general
 app.register_blueprint(general)
 
@@ -75,6 +71,10 @@ app.register_blueprint(ip_setup)
 
 from router_management import router_management
 app.register_blueprint(router_management)
+
+
+from blocking_management import blocking_management
+app.register_blueprint(blocking_management, url_prefix='/blocking_management')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

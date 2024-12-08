@@ -1,18 +1,22 @@
+/* Variables */
 :root {
-    --bg-color: #1b1c1f;
-    --sidebar-bg-color: #2e2f38;
-    --box-bg-color: #252631;
-    --primary-color: #00d8ff;
-    --text-color: #e4e4e4;
+    --bg-color: #121927; /* Dark navy blue for background */
+    --sidebar-bg-color: #14223e; /* Slightly brighter for sidebar */
+    --box-bg-color: #14223e; /* Slate gray for cards */
+    --primary-color: #ffffff; /* Royal blue for primary elements */
+    --accent-color: #4c82ef; /* Golden amber for highlights */
+    --text-color: #E4E4E4; /* Soft white for text */
+    --muted-text-color: #A8B2C3; /* Muted gray for secondary text */
     --shadow-color: rgba(0, 0, 0, 0.15);
     --font-size-base: 1rem;
     --font-size-lg: 1.5rem;
     --font-size-xl: 2rem;
-    --padding: 20px;
-    --box-radius: 15px;
-    --box-shadow: 0 10px 20px var(--shadow-color);
+    --padding: 15px;
+    --box-radius: 12px;
+    --box-shadow: 0 5px 15px var(--shadow-color);
 }
 
+/* General Styles */
 body {
     font-family: 'Poppins', sans-serif;
     background-color: var(--bg-color);
@@ -22,147 +26,244 @@ body {
     box-sizing: border-box;
 }
 
-/* Headers */
 h2 {
     color: var(--primary-color);
-    font-size: 1.5rem;
+    font-size: var(--font-size-lg);
     font-weight: 600;
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-/* General card styling */
+/* Dashboard Layout */
+.dashboard-container {
+    margin-left: 245px;
+    padding: var(--padding);
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 3fr 1fr; /* Main content 3/4, sidebar 1/4 */
+    grid-template-rows: 1fr 1fr 1fr; /* Equal row heights for uniform layout */
+    grid-template-areas:
+        "quick-summary recent-activity"
+        "speed-test recent-activity"
+        "data-usage your-ip";
+    gap: 10px; /* Adjust gap for tighter alignment */
+    box-sizing: border-box;
+}
+
+/* General Card Styling */
 .card {
     background-color: var(--box-bg-color);
     border-radius: var(--box-radius);
-    padding: 20px;
+    padding: var(--padding);
     box-shadow: var(--box-shadow);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 40vh;
     box-sizing: border-box;
-    margin-bottom: 20px;
+    transition: box-shadow 0.3s ease-in-out;
 }
 
-/* IP Input Form Styling */
-.ip-input-container {
-    width: 100%;
-    max-width: 400px;
-    background-color: var(--box-bg-color);
-    border-radius: var(--box-radius);
-    box-shadow: var(--box-shadow);
-    padding: 20px;
-    margin: 50px auto; /* Center the form horizontally */
-    text-align: center;
+.card:hover {
+    box-shadow: 0 8px 20px var(--shadow-color);
 }
 
-.ip-input-container h2 {
-    margin-bottom: 20px;
+/* Quick Summary */
+.quick-summary {
+    grid-area: quick-summary;
 }
 
-.ip-input-container form {
+.quick-summary p,
+.quick-summary span {
+    color: var(--primary-color);
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.quick-summary span {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Speed Test History */
+.speed-test-history {
+    grid-area: speed-test;
+    height: 100%; /* Ensure it occupies full row height */
+}
+
+/* Data Usage History */
+.data-usage-history {
+    grid-area: data-usage;
+    height: 100%; /* Ensure it occupies full row height */
+}
+
+/* Your IP */
+.your-ip {
+    grid-area: your-ip;
+    height: 100%; /* Ensure it occupies full row height */
+}
+
+/* Recent Activity */
+.recent-activity {
+    grid-area: recent-activity;
+    overflow-y: auto;
+    height: 100%; /* Ensure it occupies full row height */
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 15px;
 }
 
-.ip-input-container input {
-    width: 100%;
+.recent-activity h2 {
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+/* Scrollable List for Recent Activity */
+.scrollable-list {
+    list-style: none;
     padding: 10px;
+    margin: 0;
+    flex-grow: 1;
+    overflow-y: auto;
+    border: 1px solid #444;
     border-radius: var(--box-radius);
-    border: none;
-    background-color: #1b1b2d;
-    color: var(--text-color);
+    background-color: var(--box-bg-color);
 }
 
-.ip-input-container button {
-    padding: 10px 20px;
+.scrollable-list li {
+    padding: 8px;
+    margin-bottom: 5px;
+    color: var(--text-color);
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.scrollable-list li:hover {
+    background-color: var(--accent-color); /* Amber highlight on hover */
+    color: var(--bg-color);
+}
+
+.scrollable-list li:last-child {
+    margin-bottom: 0;
+}
+
+/* Chart Styles */
+canvas {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    margin-bottom: 0; /* Removed margin to avoid unnecessary gaps */
+}
+
+/* Buttons */
+.refresh-container {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-start;
+    grid-area: recent-activity;
+}
+
+#refresh-btn {
+    padding: 8px 15px;
     background-color: var(--primary-color);
-    color: #fff;
+    color: var(--text-color);
     border: none;
     border-radius: var(--box-radius);
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-.ip-input-container button:hover {
-    background-color: #00b3cc;
+#refresh-btn:hover {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
 }
 
-.ip-input-container .error {
-    color: red;
-    font-size: 0.9rem;
-    margin-top: 10px;
-}
-
-/* Only the recent activity card will have scroll */
-.recent-activity {
-    overflow-y: auto; /* Enable vertical scroll */
-    max-height: 40vh; /* Limit the height of the container */
-}
-
-.quick-summary p, .quick-summary span {
-    color: var(--primary-color);
-    font-size: 1.2rem;
-    margin-bottom: 15px; /* More spacing between each line of text */
-}
-
-.quick-summary span {
-    font-weight: bold;
-    font-size: 1.5rem;
-}
-
-canvas {
+/* Loading Spinner */
+#loading-spinner {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: auto;
-    max-height: 200px;
-    margin-bottom: 20px; /* Add space between the canvas and the surrounding elements */
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    flex-direction: column;
 }
 
-.sidebar ul li a {
-    display: block;
-    padding: 15px;
-    color: var(--text-color);
-    font-size: var(--font-size-base);
-    text-decoration: none;
-    transition: background-color 0.3s ease;
+#loading-spinner .spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top: 5px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
 }
 
-.sidebar ul li a:hover, .sidebar ul li a.active {
-    background-color: var(--primary-color);
-    color: #fff;
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
-.dashboard-container {
-    margin-left: 270px;
-    padding: 30px; /* Increased padding around the whole dashboard */
-    height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    grid-template-areas:
-        "quick-summary ip-status speed-test"
-        "data-usage recent-activity your-ip";
-    gap: 25px; /* Gap between grid items */
-    box-sizing: border-box;
+/* Alerts */
+.alert {
+    padding: 10px;
+    border-radius: var(--box-radius);
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
 }
 
-/* Responsive adjustments */
+.alert.show {
+    opacity: 1;
+}
+
+.alert.success {
+    background-color: #28a745;
+    color: white;
+}
+
+.alert.danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.alert.info {
+    background-color: #17a2b8;
+    color: white;
+}
+
+/* Responsive Adjustments */
 @media (max-width: 768px) {
     .dashboard-container {
         grid-template-columns: 1fr;
-        grid-template-rows: auto;
-        gap: 15px;
+        grid-template-areas:
+            "quick-summary"
+            "recent-activity"
+            "speed-test"
+            "data-usage"
+            "your-ip";
+        gap: 10px;
     }
 
     .card {
-        height: auto;
+        padding: 10px;
     }
 
-    .recent-activity {
-        max-height: none; /* Disable max-height for small screens */
+    canvas {
+        max-height: 150px;
+    }
+
+    .dashboard-container {
+        padding: 10px;
     }
 }

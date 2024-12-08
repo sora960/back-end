@@ -9,35 +9,41 @@ import logging
 import requests
 import hashlib
 from passlib.hash import md5_crypt, sha256_crypt, sha512_crypt
+from functools import wraps
 
 # Logger setup
 logger = logging.getLogger(__name__)
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(module)s - %(funcName)s - Line: %(lineno)d - %(message)s'
+)
+
+# Centralized router credentials
+ROUTER_CONFIG = {
+    "router_ip": "192.168.8.1",
+    "url": f"http://192.168.8.1/rpc",
+    "username": "root",
+    "password": "123456"
+}
 
 # Function to log user activity
-def get_ip_status(ip_address):
-    """Mock function to determine the status of the given IP."""
-    # Logic to determine IP status, this can vary depending on how you track IP statuses
-    # Here’s a basic example:
-    mongo = current_app.extensions['pymongo']
-    ip_data = mongo.db.ip_allocations.find_one({"ip_address": ip_address})
-    if ip_data and ip_data.get("status") == "online":
-        return "online"
-    return "offline"
-
 def log_activity(action, details):
     """Logs user activity into MongoDB."""
-    mongo = current_app.extensions['pymongo']
-    activity = {
-        "user_id": current_user.get_id(),
-        "username": current_user.username if current_user.is_authenticated else "system",
-        "action": action,
-        "details": details,
-        "timestamp": datetime.utcnow().isoformat() + "Z"
-    }
-    mongo.db.activities.insert_one(activity)
-    current_app.logger.info(f"Activity logged: {activity}")
+    try:
+        mongo = current_app.extensions['pymongo']
+        activity = {
+            "user_id": current_user.get_id(),
+            "username": current_user.username if current_user.is_authenticated else "system",
+            "action": action,
+            "details": details,
+            "timestamp": datetime.utcnow().isoformat() + "Z"
+        }
+        mongo.db.activities.insert_one(activity)
+        logger.info(f"Activity logged: {activity}")
+    except Exception as e:
+        logger.error(f"Failed to log activity: {e}")
 
-# Function to validate IP address
+# General utility functions
 def validate_ip(ip):
     """Validates if the provided IP address is in a correct format."""
     try:
@@ -46,90 +52,112 @@ def validate_ip(ip):
     except ValueError:
         return False
 
-# Function to convert ObjectId to string
 def convert_objectid(obj):
     """Converts ObjectId to string."""
     if isinstance(obj, ObjectId):
         return str(obj)
     return obj
 
-# Error handling for validation issues
+# Error handling functions
 def handle_validation_error(message):
+    """Handles validation errors."""
     logger.warning(f"Validation error: {message}")
     return jsonify(message=message), 400
 
-# Error handling for database issues
 def handle_database_error(message):
+    """Handles database errors."""
     logger.error(f"Database error: {message}")
     return jsonify(message="Database error", error=message), 500
 
-# GL.iNet router settings
-# Define your router's credentials and API endpoint
-router_ip = "192.168.10.10"  # Replace with your router's IP
-url = f"http://{router_ip}/rpc"
-username = "root"  # Replace with your router's username
-password = "153246#pota"  # Replace with your router's password
+# Logging decorator
+def log_route(func):
+    """Decorator for logging API routes."""
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        logger.info(f"Endpoint {current_app.name}{func.__name__} called.")
+        try:
+            response = func(*args, **kwargs)
+            
+            # Handle string responses or objects without a `status_code` attribute
+            if isinstance(response, str):
+                logger.info(f"Response: {response}")
+            elif hasattr(response, 'status_code'):
+                logger.info(f"Response: {response.status_code}")
+            else:
+                logger.warning("Response has no status_code and is not a string.")
 
+            return response
+        except Exception as e:
+            logger.error(f"Error in route {func.__name__}: {e}")
+            raise
+    return wrapper
 
+# GL.iNet router-related functions
 def get_encryption_parameters():
-    response = requests.post(url, json={
-        "jsonrpc": "2.0",
-        "method": "challenge",
-        "params": {"username": username},
-        "id": 0
-    })
-    print("Encryption parameters response:", response.text)  # Print the raw response
-    data = response.json().get('result', {})
-    return data.get('alg'), data.get('salt'), data.get('nonce')
-
+    """Fetch encryption parameters for login."""
+    try:
+        response = requests.post(ROUTER_CONFIG["url"], json={
+            "jsonrpc": "2.0",
+            "method": "challenge",
+            "params": {"username": ROUTER_CONFIG["username"]},
+            "id": 0
+        })
+        response.raise_for_status()
+        data = response.json().get('result', {})
+        return data.get('alg'), data.get('salt'), data.get('nonce')
+    except Exception as e:
+        logger.error(f"Failed to get encryption parameters: {e}")
+        raise
 
 def generate_cipher_password(alg, salt, password):
+    """Generate a cipher password based on the algorithm and salt."""
     if alg == 1:
         return md5_crypt.using(salt=salt).hash(password)
     elif alg == 5:
         return sha256_crypt.using(salt=salt).hash(password)
     elif alg == 6:
         return sha512_crypt.using(salt=salt).hash(password)
-
+    else:
+        raise ValueError("Unsupported encryption algorithm.")
 
 def login():
+    """Login to the router and fetch session ID."""
     try:
         alg, salt, nonce = get_encryption_parameters()
-        cipher_password = generate_cipher_password(alg, salt, password)
-        hash_value = hashlib.md5(f"{username}:{cipher_password}:{nonce}".encode()).hexdigest()
-        response = requests.post(url, json={
+        cipher_password = generate_cipher_password(alg, salt, ROUTER_CONFIG["password"])
+        hash_value = hashlib.md5(
+            f"{ROUTER_CONFIG['username']}:{cipher_password}:{nonce}".encode()
+        ).hexdigest()
+        response = requests.post(ROUTER_CONFIG["url"], json={
             "jsonrpc": "2.0",
             "method": "login",
-            "params": {"username": username, "hash": hash_value},
+            "params": {"username": ROUTER_CONFIG["username"], "hash": hash_value},
             "id": 0
         })
-        print("Login response:", response.text)  # Print the raw response for debugging
+        response.raise_for_status()
         return response.json()['result']['sid']
     except Exception as e:
-        print("Login failed:", e)
-        return None
-
+        logger.error(f"Login failed: {e}")
+        raise
 
 def block_ip(ip_to_block):
-    sid = login()
-    if not sid:
-        return {"error": "Login failed, no session ID returned."}
-
-    response = requests.post(url, json={
-        "jsonrpc": "2.0",
-        "method": "call",
-        "params": [
-            sid,
-            "firewall",  # Confirm this module name
-            "add_rule",  # Confirm this method for adding a rule
-            {"ip": ip_to_block, "action": "block"}
-        ],
-        "id": 0
-    })
-
+    """Block an IP address via the router's firewall."""
     try:
-        response_data = response.json()
-        return response_data
-    except ValueError:
-        return {"error": "Failed to parse response from API."}
-
+        sid = login()
+        response = requests.post(ROUTER_CONFIG["url"], json={
+            "jsonrpc": "2.0",
+            "method": "call",
+            "params": [
+                sid,
+                "firewall",  # Confirm this module name
+                "add_rule",  # Confirm this method for adding a rule
+                {"ip": ip_to_block, "action": "block"}
+            ],
+            "id": 0
+        })
+        response.raise_for_status()
+        logger.info(f"Blocked IP {ip_to_block}: {response.json()}")
+        return response.json()
+    except Exception as e:
+        logger.error(f"Failed to block IP {ip_to_block}: {e}")
+        raise

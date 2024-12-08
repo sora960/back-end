@@ -1,82 +1,83 @@
-document.getElementById('generate-report-btn').addEventListener('click', function() {
-    const reportType = document.getElementById('report-type').value;
+document.addEventListener("DOMContentLoaded", async function () {
+    const reportsTableBody = document.querySelector("#reports-table tbody");
+    const errorDiv = document.querySelector("#error-message");
 
-    // Get start and end date and convert to ISO format, but only use the date part (YYYY-MM-DD)
-    const startDateInput = document.getElementById('start-date').value;
-    const endDateInput = document.getElementById('end-date').value;
+    try {
+        // Run migration to ensure the latest reports are available
+        await runMigration();
+        console.log("Migration completed successfully.");
 
-    // Convert to YYYY-MM-DD format, or handle missing input gracefully
-    const startDate = startDateInput ? new Date(startDateInput).toISOString().split('T')[0] : null;
-    const endDate = endDateInput ? new Date(endDateInput).toISOString().split('T')[0] : null;
-
-    if (!reportType || !startDate || !endDate) {
-        // Handle missing inputs before making the request
-        document.getElementById('report-output').innerHTML = '<p>Please select all required fields (Report Type, Start Date, End Date).</p>';
-        return;
+        // Fetch and display reports
+        const reports = await fetchReports();
+        populateReportsTable(reports);
+    } catch (error) {
+        console.error("Error:", error);
+        showError("Failed to load reports. Please try again later.");
     }
 
-    // Send POST request to generate report
-    fetch('/generate_report', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            report_type: reportType,
-            start_date: startDate,
-            end_date: endDate
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.report_data && data.report_data.length > 0) {
-            // Set up report title
-            let reportContent = `<h2>${reportType} Report</h2>`;
+    /**
+     * Run migration to ensure the latest reports are available
+     */
+    async function runMigration() {
+        const response = await fetch("/run_migration", {
+            method: "POST",
+        });
 
-            // Create table structure based on the report type
-            reportContent += `
-                <table class="report-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Time</th>
-                            ${reportType === "IP Allocation" ? '<th>IP Address</th><th>Device Name</th>' : ''}
-                            ${reportType === "Data Usage" ? '<th>Download (MB)</th><th>Upload (MB)</th>' : ''}
-                            ${reportType === "Speed Test" ? '<th>Ping (ms)</th><th>Download Speed (Mbps)</th><th>Upload Speed (Mbps)</th>' : ''}
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            // Loop through each item in the report data
-            data.report_data.forEach(item => {
-                const dateTime = new Date(item.timestamp);
-                const date = dateTime.toLocaleDateString();
-                const time = dateTime.toLocaleTimeString();
-
-                reportContent += `<tr><td>${date}</td><td>${time}</td>`;
-
-                // Check for the report type and add appropriate table columns
-                if (reportType === "IP Allocation") {
-                    reportContent += `<td>${item.ip_address || 'N/A'}</td><td>${item.device_name || 'N/A'}</td>`;
-                } else if (reportType === "Data Usage") {
-                    reportContent += `<td>${item.download || 'N/A'}</td><td>${item.upload || 'N/A'}</td>`;
-                } else if (reportType === "Speed Test") {
-                    reportContent += `<td>${item.ping || 'N/A'}</td><td>${item.download_speed || 'N/A'}</td><td>${item.upload_speed || 'N/A'}</td>`;
-                }
-
-                reportContent += `</tr>`;
-            });
-
-            reportContent += '</tbody></table>';
-            document.getElementById('report-output').innerHTML = reportContent;
-        } else {
-            // Display message when no data is found
-            document.getElementById('report-output').innerHTML = '<p>No data available for the selected range.</p>';
+        if (!response.ok) {
+            throw new Error("Failed to run migration.");
         }
-    })
-    .catch(error => {
-        console.error('Error generating report:', error);
-        document.getElementById('report-output').innerHTML = '<p>Error generating report.</p>';
-    });
+    }
+
+    /**
+     * Fetch reports data from the server
+     * @returns {Promise<Array>} List of reports
+     */
+    async function fetchReports() {
+        const response = await fetch("/api/reports");
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch reports data.");
+        }
+
+        const data = await response.json();
+        return data.reports;
+    }
+
+    /**
+     * Populate the table with reports
+     * @param {Array} reports List of reports
+     */
+    function populateReportsTable(reports) {
+        reportsTableBody.innerHTML = ""; // Clear existing rows
+
+        reports.forEach(report => {
+            const row = document.createElement("tr");
+
+            // Report Type
+            const reportTypeCell = document.createElement("td");
+            reportTypeCell.textContent = report.report_type;
+            row.appendChild(reportTypeCell);
+
+            // Time and Date
+            const timeAndDateCell = document.createElement("td");
+            timeAndDateCell.textContent = report.time_and_date;
+            row.appendChild(timeAndDateCell);
+
+            // Details
+            const detailsCell = document.createElement("td");
+            detailsCell.textContent = report.details;
+            row.appendChild(detailsCell);
+
+            reportsTableBody.appendChild(row);
+        });
+    }
+
+    /**
+     * Show error message
+     * @param {string} message Error message to display
+     */
+    function showError(message) {
+        errorDiv.textContent = message;
+        errorDiv.style.display = "block";
+    }
 });
