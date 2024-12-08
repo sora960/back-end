@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/report.css') }}">
+    
+    <!-- Include jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Include jsPDF autoTable plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
 
@@ -18,6 +23,42 @@
 
         <!-- Validation and loading messages -->
         <div id="error-message" class="validation-message" style="display: none; color: red;"></div>
+
+        <!-- Loading Indicator -->
+        <div id="loading-indicator" style="display: none;">Loading reports...</div>
+
+        <!-- Filter section (aligned horizontally) -->
+        <div class="filters-container">
+            <!-- Filter by Report Type -->
+            <div class="filter-container">
+                <label for="report-type-filter">Filter by Report Type:</label>
+                <select id="report-type-filter">
+                    <option value="">All</option>
+                    <option value="IP Assignment">IP Assignment</option>
+                    <option value="Device Blocked">Device Block</option>
+                    <option value="Device Unblocked">Device Unblock</option>
+                    <option value="Data Usage">Data Usage Tracking</option>
+                    <option value="Speed Test">Speed Test</option>
+                </select>
+            </div>
+
+            <!-- Filter by Date -->
+            <div class="filter-container">
+                <label for="date-filter">Filter by Date:</label>
+                <select id="date-filter">
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="custom">Custom Date Range</option>
+                </select>
+                
+                <!-- Custom Date Range Picker (hidden by default) -->
+                <div id="custom-date-range" style="display: none;">
+                    <input type="date" id="start-date">
+                    <input type="date" id="end-date">
+                </div>
+            </div>
+        </div>
 
         <!-- Reports Table -->
         <table id="reports-table" class="styled-table">
@@ -32,8 +73,41 @@
                 <!-- Rows will be dynamically populated by JavaScript -->
             </tbody>
         </table>
+
+        <!-- Export to PDF Button -->
+        <div class="export-container">
+            <button id="export-pdf" class="btn-export" title="Export the table data to PDF">Export to PDF</button>
+        </div>
     </div>
 
+    <!-- JS Scripts -->
     <script src="{{ url_for('static', filename='js/report.js') }}"></script>
+
+    <!-- PDF Export Script -->
+    <script>
+        // Export the table to PDF
+        document.getElementById("export-pdf").addEventListener("click", function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const table = document.getElementById("reports-table");
+            const rows = table.querySelectorAll("tbody tr");
+            const headers = Array.from(table.querySelectorAll("thead th")).map(header => header.innerText);
+
+            const data = Array.from(rows).map(row => {
+                const cols = row.querySelectorAll("td");
+                return Array.from(cols).map(col => col.innerText);
+            });
+
+            doc.autoTable({
+                head: [headers],
+                body: data,
+            });
+
+            // Save the PDF with a custom filename
+            doc.save("reports.pdf");
+        });
+    </script>
+
 </body>
 </html>
