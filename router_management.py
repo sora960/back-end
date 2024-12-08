@@ -140,7 +140,7 @@ def change_device_ip(router_ip, username, password, mac, new_ip):
     """
     logging.info(f"Processing IP reassignment for MAC {mac}. Desired IP: {new_ip}")
 
-    # Fetch existing assignment for the MAC
+    # Step 1: Fetch existing assignment for the MAC address
     fetch_command = f"uci show dhcp | grep 'dhcp.@host' | grep '{mac}'"
     output, fetch_error = execute_command_on_router(router_ip, username, password, fetch_command)
 
@@ -148,25 +148,34 @@ def change_device_ip(router_ip, username, password, mac, new_ip):
         logging.error(f"Error fetching existing assignment for MAC {mac}: {fetch_error}")
         return False, f"Error checking current IP assignment: {fetch_error}"
 
-    # Parse current IP assignment (if any)
+    # Parse the current IP assignment and host index (if any)
     current_ip = None
-    match = re.search(r"ip='(.+?)'", output)
-    if match:
-        current_ip = match.group(1)
+    host_index = None
+    for line in output.splitlines():
+        if "ip" in line:
+            current_ip = line.split("'")[-2]  # Extract the current IP
+        if "dhcp.@host[" in line:
+            host_index = re.search(r"dhcp\.@host\[(\d+)\]", line).group(1)
 
     if current_ip == new_ip:
         logging.info(f"Device with MAC {mac} already has the desired IP {new_ip}. No changes needed.")
         return True, f"IP {new_ip} is already assigned to device with MAC {mac}."
 
-    # Remove old assignment if it exists
-    if current_ip:
-        logging.info(f"Removing old IP assignment {current_ip} for MAC {mac}.")
-        remove_command = f"uci delete dhcp.@host[-1]; uci commit dhcp; /etc/init.d/dnsmasq restart"
+    # Step 2: Remove the old assignment if it exists
+    if host_index is not None:
+        logging.info(f"Removing old assignment at host index {host_index} for MAC {mac}.")
+        remove_command = (
+            f"uci delete dhcp.@host[{host_index}]; "
+            f"uci commit dhcp; "
+            f"/etc/init.d/dnsmasq restart"
+        )
         _, remove_error = execute_command_on_router(router_ip, username, password, remove_command)
         if remove_error:
-            logging.warning(f"Failed to remove old IP assignment for MAC {mac}: {remove_error}")
+            logging.warning(f"Failed to remove old assignment for MAC {mac}: {remove_error}")
+        else:
+            logging.info(f"Successfully removed old assignment for MAC {mac}.")
 
-    # Assign the new IP
+    # Step 3: Assign the new IP
     logging.info(f"Assigning new IP {new_ip} to device with MAC {mac}.")
     assign_command = (
         f"uci add dhcp host; "
@@ -184,6 +193,7 @@ def change_device_ip(router_ip, username, password, mac, new_ip):
     else:
         logging.error(f"Failed to assign IP {new_ip} to device with MAC {mac}: {assign_error}")
         return False, f"Failed to assign IP: {assign_error}"
+
 
 # Routes
 @router_management.route('/router_management', methods=['GET'])

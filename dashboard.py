@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, current_app, render_template, request
 import logging
 import requests
+from datetime import datetime
 
 # Initialize the blueprint
 dashboard = Blueprint('dashboard', __name__)
@@ -54,14 +55,36 @@ def get_dashboard_data():
 
         # Fetch recent activities (last 5 entries) from the `activities` collection
         recent_activities = mongo.db.activities.find().sort("timestamp", -1).limit(5)
-        activity_log = [
-            {
-                "action": activity.get('action', "No activity"),
-                "details": activity.get('details', "No recent data"),
-                "timestamp": activity.get('timestamp', "N/A")
-            }
-            for activity in recent_activities
-        ]
+        activity_log = []
+
+        for activity in recent_activities:
+            action = activity.get('action', "No activity")
+            details = activity.get('details', {})
+            timestamp = activity.get('timestamp', "N/A")
+
+            # Format details based on action
+            if action == "IP Assignment":
+                details = f"Assigned IP {details.get('ip_address', 'N/A')} to device with MAC {details.get('mac_address', 'N/A')}."
+            elif action == "Device Block":
+                details = f"Blocked MAC {details.get('mac_address', 'N/A')}."
+            elif action == "Device Unblock":
+                details = f"Unblocked MAC {details.get('mac_address', 'N/A')}."
+            elif action == "Data Usage Tracking":
+                details = f"Tracked data usage: Download={details.get('download', 0)} MB, Upload={details.get('upload', 0)} MB."
+            elif action == "Speed Test":
+                details = f"Speed test results: Download={details.get('download_speed', 0)} Mbps, Upload={details.get('upload_speed', 0)} Mbps, Ping={details.get('ping', 0)} ms."
+            else:
+                details = "No details available"
+
+            # Format timestamp into a readable format
+            formatted_timestamp = datetime.fromisoformat(timestamp.replace("Z", "")).strftime("%I:%M %p %B %d, %Y") if isinstance(timestamp, str) else "Unknown Time"
+
+            activity_log.append({
+                "action": action,
+                "details": details,
+                "timestamp": formatted_timestamp
+            })
+
         # Debug Recent Activity
         logger.debug(f"Recent Activity: {activity_log}")
 
@@ -70,9 +93,11 @@ def get_dashboard_data():
         network_provider = "Unknown ISP"
         try:
             public_ip_response = requests.get('https://api64.ipify.org?format=json', timeout=5)
+            print("Public IP Response:", public_ip_response.json())  # Debugging print
             public_ip = public_ip_response.json().get('ip', 'Unavailable')
 
             ipinfo_response = requests.get(f'https://ipinfo.io/{public_ip}?token=97d409f854b926', timeout=5)
+            print("IP Info Response:", ipinfo_response.json())  # Debugging print
             ipinfo_data = ipinfo_response.json()
             network_provider = ipinfo_data.get('org', 'Unknown ISP')
         except requests.exceptions.RequestException as req_e:
@@ -92,8 +117,11 @@ def get_dashboard_data():
             "data_usage_history": data_usage_history,
             "recent_activity": activity_log,
             "your_ip": request.remote_addr,
-            "public_ip": public_ip,
-            "network_provider": network_provider,
+            "network_info": {  # Wrap the IP and ISP data in a network_info object
+            "yourIp": request.remote_addr,
+            "publicIp": public_ip,
+            "networkProvider": network_provider
+             },
             "is_empty": not any([speed_test_history, data_usage_history, activity_log])
         }
 

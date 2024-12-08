@@ -35,11 +35,8 @@ async function fetchDashboardData() {
         populateSpeedTestHistory(dashboardData.speed_test_history || []);
         populateDataUsageHistory(dashboardData.data_usage_history || []);
         populateRecentActivity(dashboardData.recent_activity || []);
-        populateNetworkInfo(
-            dashboardData.your_ip || "N/A",
-            dashboardData.public_ip || "Unavailable",
-            dashboardData.network_provider || "Unknown ISP"
-        );
+        // Function to populate the IP and ISP info
+        populateNetworkInfo(dashboardData.network_info || {});
     } catch (error) {
         console.error("Error fetching dashboard data:", error);
         showResponse(`Error fetching dashboard data: ${error.message}`, 'danger');
@@ -162,7 +159,6 @@ function populateDataUsageHistory(dataUsageHistory) {
     });
 }
 
-
 // Function to populate recent activity
 function populateRecentActivity(recentActivity) {
     console.log("Populating Recent Activity Data:", recentActivity);
@@ -177,16 +173,28 @@ function populateRecentActivity(recentActivity) {
 
     recentActivity.forEach(activity => {
         const listItem = document.createElement('li');
-        listItem.textContent = `${new Date(activity.timestamp).toLocaleString()} - ${activity.action}: ${activity.details}`;
+        
+        // Format the timestamp to a readable format
+        const formattedTimestamp = new Date(activity.timestamp).toLocaleString();
+        
+        // Format the activity entry text
+        const activityText = `${formattedTimestamp} - ${activity.action}: ${activity.details}`;
+        
+        // Create a list item for each activity entry
+        listItem.textContent = activityText;
         activityList.appendChild(listItem);
     });
 }
 
-// Function to populate network information
-function populateNetworkInfo(localIP, publicIP, networkProvider) {
-    console.log("Populating Network Info:", { localIP, publicIP, networkProvider });
-    document.getElementById('your-ip').textContent = localIP;
-    document.getElementById('network-provider').textContent = networkProvider || 'Unknown ISP';
+// Function to populate network info (IP and ISP)
+function populateNetworkInfo(networkInfo) {
+    console.log("Populating Network Info Data:", networkInfo);
+
+    const { yourIp, publicIp, networkProvider } = networkInfo;
+
+    document.getElementById('your-ip').textContent = yourIp || 'N/A';
+    document.getElementById('public-ip').textContent = publicIp || 'N/A';
+    document.getElementById('network-provider').textContent = networkProvider || 'N/A';
 }
 
 // Show the loading spinner
